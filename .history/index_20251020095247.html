@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>12A1 - Note Sang Chúc 20/10</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background: linear-gradient(to bottom, #e5e7eb, #f3f4f6);
+        font-family: "Roboto", sans-serif;
+        position: relative;
+        overflow-x: hidden;
+      }
+      .polaroid {
+        background: #fffacd;
+        border: 2px solid #d4af37;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        transform: rotate(var(--rotate, 0deg));
+        transition: transform 0.3s ease;
+      }
+      .polaroid:hover {
+        transform: scale(1.05) rotate(0deg);
+      }
+      .note-content img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #d4af37;
+      }
+      .input-polaroid {
+        transform: rotate(1deg);
+        transition: all 0.3s ease;
+      }
+      .input-polaroid:hover {
+        transform: scale(1.02) rotate(0deg);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+      }
+      .submit-btn {
+        transition: all 0.3s ease;
+      }
+      .submit-btn:hover {
+        background: #d4af37;
+        color: #2d3748;
+      }
+      .pagination button {
+        transition: background 0.3s ease;
+      }
+      .pagination button:hover {
+        background: #d4af37;
+        color: #2d3748;
+      }
+      .bg-polaroid {
+        position: absolute;
+        width: 200px;
+        height: 250px;
+        z-index: -1;
+      }
+      .bg-polaroid img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  </head>
+  <body
+    class="min-h-screen flex flex-col items-center py-10 text-gray-800 relative"
+  >
+    <div
+      class="bg-polaroid"
+      style="--rotate: -5deg; top: 10%; left: 10%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://onoff.vn/blog/wp-content/uploads/2024/09/labubu-1.jpg"
+        alt="Background Polaroid 1"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: 3deg; top: 20%; right: 15%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://upload.wikimedia.org/wikipedia/en/a/a9/Pop_Mart_Labubu_The_Monsters_Exciting_Macaron.jpg"
+        alt="Background Polaroid 2"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: -2deg; top: 40%; left: 5%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://bizweb.dktcdn.net/thumb/1024x1024/100/427/145/products/labubu-time-to-chill-38cm-popmart-3.jpg?v=1723167327887"
+        alt="Background Polaroid 3"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: 5deg; top: 50%; right: 10%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://cdn.chiaki.vn/unsafe/0x960/left/top/smart/filters:quality(75)/https://chiaki.vn/upload/product/2024/08/moc-khoa-pop-mart-labubu-the-monsters-have-a-seat-vinyl-plush-mau-dada-66aaf4f929362-01082024093745.jpg"
+        alt="Background Polaroid 4"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: -3deg; top: 70%; left: 20%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuYM-Exg4xwyyFxrzr0ggH0id9qgS0A0X9tA&s"
+        alt="Background Polaroid 5"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: 4deg; top: 30%; right: 5%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrJkcqqDUdiq7mRyQ35F9RCwdKdOVfzkww2A&s"
+        alt="Background Polaroid 6"
+      />
+    </div>
+
+    <header class="text-center mb-8 z-10">
+      <h1 class="text-4xl font-bold text-yellow-600 font-playfair">
+        12A1 - Note Sang Chúc 20/10
+      </h1>
+      <p class="mt-2 text-lg text-gray-700">
+        Gửi lời chúc ẩn danh đến các cô gái 12A1!
+      </p>
+    </header>
+
+    <section class="w-full max-w-md p-6 z-10">
+      <div
+        id="inputSection"
+        class="input-polaroid polaroid p-6 rounded-lg relative w-80 mx-auto flex flex-col gap-4 bg-white"
+      >
+        <input
+          id="wishInput"
+          type="text"
+          placeholder="Viết lời chúc..."
+          class="p-2 rounded border border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        />
+        <input
+          id="nicknameInput"
+          type="text"
+          placeholder="Biệt danh..."
+          class="p-2 rounded border border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        />
+
+        <button
+          id="submitWish"
+          class="submit-btn bg-yellow-600 text-white py-1 px-3 rounded"
+        >
+          Dán Note
+        </button>
+      </div>
+    </section>
+
+    <section class="w-full max-w-5xl p-6 z-10">
+      <div
+        id="wishList"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+      ></div>
+    </section>
+
+    <script>
+      // Thay bằng config thật từ Firebase Console
+      const firebaseConfig = {
+        apiKey: "AIzaSyDl2a7N-WMSiV-iXr3bXHSO0FCcOc8j1PY",
+        authDomain: "a1-wishes-2025.firebaseapp.com",
+        databaseURL:
+          "https://a1-wishes-2025-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "a1-wishes-2025",
+        storageBucket: "a1-wishes-2025.firebasestorage.app",
+        messagingSenderId: "259590168445",
+        appId: "1:259590168445:web:0fff00c71feb085427b614",
+      };
+      try {
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const storage = firebase.storage();
+        const wishesRef = db.ref("wishes");
+
+        const wishInput = document.getElementById("wishInput");
+        const nicknameInput = document.getElementById("nicknameInput");
+        const imageInput = document.getElementById("imageInput");
+        const submitWish = document.getElementById("submitWish");
+        const wishList = document.getElementById("wishList");
+        const prevPage = document.getElementById("prevPage");
+        const nextPage = document.getElementById("nextPage");
+        const pageInfo = document.getElementById("pageInfo");
+        const inputSection = document.getElementById("inputSection");
+
+        let wishes = [];
+        let currentPage = 1;
+        const itemsPerPage = 6;
+
+        wishesRef.on(
+          "value",
+          (snapshot) => {
+            wishes = [];
+            snapshot.forEach((child) => {
+              wishes.push(child.val());
+            });
+            renderWishes();
+          },
+          (error) => {
+            console.error("Lỗi đọc DB:", error.message);
+          }
+        );
+
+        function renderWishes() {
+          wishList.innerHTML = "";
+          const start = (currentPage - 1) * itemsPerPage;
+          const end = start + itemsPerPage;
+          const paginatedWishes = wishes.slice(start, end);
+
+          paginatedWishes.forEach((wish) => {
+            const div = document.createElement("div");
+            div.className =
+              "polaroid p-4 rounded-lg relative w-64 h-80 flex flex-col justify-between";
+            div.innerHTML = `
+            <div class="note-content flex-1 overflow-hidden">
+              <p class="text-gray-800">${wish.text || "Không có nội dung"}</p>
+              ${
+                wish.imageUrl
+                  ? `<img src="${wish.imageUrl}" alt="Note image" class="mt-2 rounded">`
+                  : ""
+              }
+            </div>
+            <p class="mt-2 text-sm text-gray-600 italic text-right">~ ${
+              wish.nickname || "Người bí ẩn"
+            }</p>
+          `;
+            wishList.appendChild(div);
+          });
+
+          pageInfo.textContent = `Trang ${currentPage} / ${Math.ceil(
+            wishes.length / itemsPerPage
+          )}`;
+          prevPage.disabled = currentPage === 1;
+          nextPage.disabled = end >= wishes.length;
+        }
+
+        submitWish.addEventListener("click", () => {
+          if (wishInput.value.trim()) {
+            const wishData = {
+              text: wishInput.value,
+              nickname: nicknameInput.value.trim() || "Người bí ẩn",
+              timestamp: Date.now(),
+              imageUrl: "",
+            };
+
+            if (imageInput.files.length > 0) {
+              const file = imageInput.files[0];
+              const storageRef = storage.ref(
+                `images/${Date.now()}_${file.name}`
+              );
+              const uploadTask = storageRef.put(file);
+
+              uploadTask.on(
+                "state_changed",
+                null,
+                (error) => {
+                  console.error("Lỗi upload ảnh:", error.message);
+                },
+                () => {
+                  uploadTask.snapshot.ref
+                    .getDownloadURL()
+                    .then((downloadURL) => {
+                      wishData.imageUrl = downloadURL;
+                      wishesRef.push(wishData);
+                      resetForm();
+                    });
+                }
+              );
+            } else {
+              wishesRef.push(wishData);
+              resetForm();
+            }
+
+            inputSection.classList.add("animate-pulse");
+            setTimeout(
+              () => inputSection.classList.remove("animate-pulse"),
+              300
+            );
+          }
+        });
+
+        function resetForm() {
+          wishInput.value = "";
+          nicknameInput.value = "";
+          imageInput.value = "";
+        }
+
+        prevPage.addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderWishes();
+          }
+        });
+
+        nextPage.addEventListener("click", () => {
+          if (currentPage * itemsPerPage < wishes.length) {
+            currentPage++;
+            renderWishes();
+          }
+        });
+      } catch (error) {
+        console.error("Lỗi khởi tạo Firebase:", error.message);
+        alert(
+          "Lỗi cấu hình Firebase. Vui lòng kiểm tra config, kết nối internet, hoặc kích hoạt Database/Storage."
+        );
+      }
+    </script>
+  </body>
+</html>
