@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>12A1 - Note Sang Chúc 20/10</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background: linear-gradient(to bottom, #e5e7eb, #f3f4f6);
+        font-family: "Roboto", sans-serif;
+        position: relative;
+        overflow-x: hidden;
+      }
+      .polaroid {
+        background: #fffacd;
+        border: 2px solid #d4af37;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        transform: rotate(var(--rotate, 0deg));
+        transition: transform 0.3s ease;
+      }
+      .polaroid:hover {
+        transform: scale(1.05) rotate(0deg);
+      }
+      .note-content img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #d4af37;
+      }
+      .input-polaroid {
+        transform: rotate(1deg);
+        transition: all 0.3s ease;
+      }
+      .input-polaroid:hover {
+        transform: scale(1.02) rotate(0deg);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+      }
+      .submit-btn {
+        transition: all 0.3s ease;
+      }
+      .submit-btn:hover {
+        background: #d4af37;
+        color: #2d3748;
+      }
+      .pagination button {
+        transition: background 0.3s ease;
+      }
+      .pagination button:hover {
+        background: #d4af37;
+        color: #2d3748;
+      }
+      .bg-polaroid {
+        position: absolute;
+        width: 200px;
+        height: 250px;
+        z-index: -1;
+      }
+      .bg-polaroid img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  </head>
+  <body
+    class="min-h-screen flex flex-col items-center py-10 text-gray-800 relative"
+  >
+    <div
+      class="bg-polaroid"
+      style="--rotate: -5deg; top: 10%; left: 10%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://onoff.vn/blog/wp-content/uploads/2024/09/labubu-1.jpg"
+        alt="Background Polaroid 1"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: 3deg; top: 20%; right: 15%"
+      aria-hidden="true"
+    >
+      <img
+        src="data:image/jpeg;base64,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"
+        alt="Background Polaroid 2"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: -2deg; top: 40%; left: 5%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://via.placeholder.com/200x250?text=Ảnh+Lớp+3"
+        alt="Background Polaroid 3"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: 5deg; top: 50%; right: 10%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://via.placeholder.com/200x250?text=Ảnh+Lớp+4"
+        alt="Background Polaroid 4"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: -3deg; top: 70%; left: 20%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://via.placeholder.com/200x250?text=Ảnh+Lớp+5"
+        alt="Background Polaroid 5"
+      />
+    </div>
+    <div
+      class="bg-polaroid"
+      style="--rotate: 4deg; top: 30%; right: 5%"
+      aria-hidden="true"
+    >
+      <img
+        src="https://via.placeholder.com/200x250?text=Ảnh+Lớp+6"
+        alt="Background Polaroid 6"
+      />
+    </div>
+
+    <header class="text-center mb-8 z-10">
+      <h1 class="text-4xl font-bold text-yellow-600 font-playfair">
+        12A1 - Note Sang Chúc 20/10
+      </h1>
+      <p class="mt-2 text-lg text-gray-700">
+        Gửi lời chúc ẩn danh đến các cô gái 12A1!
+      </p>
+    </header>
+
+    <section class="w-full max-w-md p-6 z-10">
+      <div
+        id="inputSection"
+        class="input-polaroid polaroid p-6 rounded-lg relative w-80 mx-auto flex flex-col gap-4 bg-white"
+      >
+        <input
+          id="wishInput"
+          type="text"
+          placeholder="Viết lời chúc..."
+          class="p-2 rounded border border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        />
+        <input
+          id="nicknameInput"
+          type="text"
+          placeholder="Biệt danh..."
+          class="p-2 rounded border border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        />
+        <input
+          id="imageInput"
+          type="file"
+          accept="image/*"
+          class="p-2 rounded border border-gray-300 bg-transparent text-gray-800"
+        />
+        <button
+          id="submitWish"
+          class="submit-btn bg-yellow-600 text-white py-1 px-3 rounded"
+        >
+          Dán Note
+        </button>
+      </div>
+    </section>
+
+    <section class="w-full max-w-5xl p-6 z-10">
+      <div
+        id="wishList"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+      ></div>
+      <div class="pagination flex justify-center gap-4 mt-6">
+        <button
+          id="prevPage"
+          class="bg-gray-700 text-white py-2 px-4 rounded-lg disabled:opacity-50"
+        >
+          Trước
+        </button>
+        <span id="pageInfo" class="text-gray-700 py-2 px-4"></span>
+        <button
+          id="nextPage"
+          class="bg-gray-700 text-white py-2 px-4 rounded-lg disabled:opacity-50"
+        >
+          Sau
+        </button>
+      </div>
+    </section>
+
+    <script>
+      // Thay bằng config thật từ Firebase Console
+      const firebaseConfig = {
+        apiKey: "AIzaSyDl2a7N-WMSiV-iXr3bXHSO0FCcOc8j1PY",
+        authDomain: "a1-wishes-2025.firebaseapp.com",
+        databaseURL:
+          "https://a1-wishes-2025-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "a1-wishes-2025",
+        storageBucket: "a1-wishes-2025.firebasestorage.app",
+        messagingSenderId: "259590168445",
+        appId: "1:259590168445:web:0fff00c71feb085427b614",
+      };
+      try {
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const storage = firebase.storage();
+        const wishesRef = db.ref("wishes");
+
+        const wishInput = document.getElementById("wishInput");
+        const nicknameInput = document.getElementById("nicknameInput");
+        const imageInput = document.getElementById("imageInput");
+        const submitWish = document.getElementById("submitWish");
+        const wishList = document.getElementById("wishList");
+        const prevPage = document.getElementById("prevPage");
+        const nextPage = document.getElementById("nextPage");
+        const pageInfo = document.getElementById("pageInfo");
+        const inputSection = document.getElementById("inputSection");
+
+        let wishes = [];
+        let currentPage = 1;
+        const itemsPerPage = 6;
+
+        wishesRef.on(
+          "value",
+          (snapshot) => {
+            wishes = [];
+            snapshot.forEach((child) => {
+              wishes.push(child.val());
+            });
+            renderWishes();
+          },
+          (error) => {
+            console.error("Lỗi đọc DB:", error.message);
+          }
+        );
+
+        function renderWishes() {
+          wishList.innerHTML = "";
+          const start = (currentPage - 1) * itemsPerPage;
+          const end = start + itemsPerPage;
+          const paginatedWishes = wishes.slice(start, end);
+
+          paginatedWishes.forEach((wish) => {
+            const div = document.createElement("div");
+            div.className =
+              "polaroid p-4 rounded-lg relative w-64 h-80 flex flex-col justify-between";
+            div.innerHTML = `
+            <div class="note-content flex-1 overflow-hidden">
+              <p class="text-gray-800">${wish.text || "Không có nội dung"}</p>
+              ${
+                wish.imageUrl
+                  ? `<img src="${wish.imageUrl}" alt="Note image" class="mt-2 rounded">`
+                  : ""
+              }
+            </div>
+            <p class="mt-2 text-sm text-gray-600 italic text-right">~ ${
+              wish.nickname || "Người bí ẩn"
+            }</p>
+          `;
+            wishList.appendChild(div);
+          });
+
+          pageInfo.textContent = `Trang ${currentPage} / ${Math.ceil(
+            wishes.length / itemsPerPage
+          )}`;
+          prevPage.disabled = currentPage === 1;
+          nextPage.disabled = end >= wishes.length;
+        }
+
+        submitWish.addEventListener("click", () => {
+          if (wishInput.value.trim()) {
+            const wishData = {
+              text: wishInput.value,
+              nickname: nicknameInput.value.trim() || "Người bí ẩn",
+              timestamp: Date.now(),
+              imageUrl: "",
+            };
+
+            if (imageInput.files.length > 0) {
+              const file = imageInput.files[0];
+              const storageRef = storage.ref(
+                `images/${Date.now()}_${file.name}`
+              );
+              const uploadTask = storageRef.put(file);
+
+              uploadTask.on(
+                "state_changed",
+                null,
+                (error) => {
+                  console.error("Lỗi upload ảnh:", error.message);
+                },
+                () => {
+                  uploadTask.snapshot.ref
+                    .getDownloadURL()
+                    .then((downloadURL) => {
+                      wishData.imageUrl = downloadURL;
+                      wishesRef.push(wishData);
+                      resetForm();
+                    });
+                }
+              );
+            } else {
+              wishesRef.push(wishData);
+              resetForm();
+            }
+
+            inputSection.classList.add("animate-pulse");
+            setTimeout(
+              () => inputSection.classList.remove("animate-pulse"),
+              300
+            );
+          }
+        });
+
+        function resetForm() {
+          wishInput.value = "";
+          nicknameInput.value = "";
+          imageInput.value = "";
+        }
+
+        prevPage.addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderWishes();
+          }
+        });
+
+        nextPage.addEventListener("click", () => {
+          if (currentPage * itemsPerPage < wishes.length) {
+            currentPage++;
+            renderWishes();
+          }
+        });
+      } catch (error) {
+        console.error("Lỗi khởi tạo Firebase:", error.message);
+        alert(
+          "Lỗi cấu hình Firebase. Vui lòng kiểm tra config, kết nối internet, hoặc kích hoạt Database/Storage."
+        );
+      }
+    </script>
+  </body>
+</html>
