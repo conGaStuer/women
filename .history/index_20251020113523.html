@@ -307,7 +307,7 @@
           paginatedWishes.forEach((wish) => {
             const div = document.createElement("div");
             const randomRotate = (Math.random() - 0.5) * 20;
-            div.className = `polaroid p-8 rounded-lg relative w-64 h-80 flex flex-col justify-between`;
+            div.className = `polaroid p-4 rounded-lg relative w-64 h-80 flex flex-col justify-between`;
             div.style.setProperty("--rotate", `${randomRotate}deg`);
             div.innerHTML = `
               <div class="note-content flex-1 overflow-hidden">
@@ -325,10 +325,10 @@
               <button class="like-btn" data-key="${wish.key}">❤️ ${
               wish.likes || 0
             }</button>
-              <button class="haha-btn" data-key="${wish.key}">😂  ${
+              <button class="haha-btn" data-key="${wish.key}">haha ${
               wish.hahaCount || 0
             }</button>
-              <button class="huhu-btn" data-key="${wish.key}">😭 ${
+              <button class="huhu-btn" data-key="${wish.key}">huhu ${
               wish.huhuCount || 0
             }</button>
             `;
