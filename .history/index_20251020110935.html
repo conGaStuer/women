@@ -284,9 +284,9 @@
                 wish.nickname || "Người bí ẩn"
               }</p>
               <button class="delete-btn" data-key="${wish.key}">X</button>
-              <button class="like-btn" data-key="${wish.key}">❤️ ${
-              wish.likes || 0
-            }</button>
+              <button class="like-btn" data-key="${wish.key}" data-liked="${
+              wish.likedBy ? "true" : "false"
+            }">❤️ ${wish.likes || 0}</button>
             `;
             wishList.appendChild(div);
           });
@@ -319,20 +319,26 @@
           document.querySelectorAll(".like-btn").forEach((btn) => {
             btn.addEventListener("click", () => {
               const key = btn.getAttribute("data-key");
-              const wishRef = wishesRef.child(key);
-              wishRef.transaction(
-                (data) => {
-                  if (data) {
-                    if (!data.likes) data.likes = 0;
-                    data.likes++;
-                    return data;
+              const isLiked = btn.getAttribute("data-liked") === "true";
+              if (!isLiked) {
+                const wishRef = wishesRef.child(key);
+                wishRef.transaction(
+                  (data) => {
+                    if (data) {
+                      if (!data.likes) data.likes = 0;
+                      data.likes++;
+                      data.likedBy = true; // Đánh dấu đã thả tim
+                      return data;
+                    }
+                  },
+                  (error) => {
+                    if (error)
+                      console.error("Lỗi cập nhật lượt thích:", error.message);
                   }
-                },
-                (error) => {
-                  if (error)
-                    console.error("Lỗi cập nhật lượt thích:", error.message);
-                }
-              );
+                );
+                btn.setAttribute("data-liked", "true");
+                btn.classList.add("liked");
+              }
             });
           });
         }
